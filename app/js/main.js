@@ -97,7 +97,9 @@ window.addEventListener('DOMContentLoaded', () => {
       if(scanResults.length == 6){
         alert(scanResults.toString());
         console.log(scanResults.toString());
-        textBoxEle.select();
+
+      }
+      textBoxEle.select();
         scanningEle.style.display = 'none';
         if (isURL(result)) {
           dialogOpenBtnElement.style.display = 'inline-block';
@@ -105,8 +107,6 @@ window.addEventListener('DOMContentLoaded', () => {
         dialogElement.classList.remove('app__dialog--hide');
         dialogOverlayElement.classList.remove('app__dialog--hide');
         const frame = document.querySelector('#frame');
-
-      }
       
       
       // if (forSelectedPhotos && frame) frame.remove();
