@@ -1,12 +1,10 @@
 {
-	"name": "barcode-scanner",
-	"description": "a simple, fast and useful progressive web application.",
+	"name": "qrloop",
+	"description": "qrloop",
 	"version": "3.1.0",
 	"scripts": {
 		"start": "webpack-dev-server --hot --inline --open --mode=development",
-		"deploy": "npm run build && bash deploy.sh",
 		"build": "cross-env NODE_ENV=production webpack-cli --mode=production --config webpack.config.js",
-		"stats": "cross-env NODE_ENV=production webpack-cli --mode=production --profile --json > stats.json",
 		"precommit": "lint-staged",
 		"pretty": "prettier --write 'app/**/*.js'"
 	},
