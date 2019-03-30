@@ -70,10 +70,17 @@
 							  <div class="col-12 col-md-6 col-lg-6">
 								<div class="card">
 								  <div class="card-header">
-									<h4 class="card-title">Scanner Data</h4>
+									<h4 class="card-title">History</h4>
+									<div class="card-header-action">
+										<a href="#" class="btn btn-warning" onclick="clearHistory()">
+											Clear History
+										</a>
+									</div>
+									</div>
+									<div class="card-body" id="history">
+									</div>
 								  </div>
-								  <div class="card-body" id="scannedData">
-								  </div>
+								  
 								</div>
 							  </div>
 							</div>
@@ -99,7 +106,7 @@
 		<script>
 				let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
 				scanner.addListener('scan', function (content) {
-					document.getElementById('scannedData').appendChild(document.createTextNode(content));
+					document.getElementById('history').appendChild(document.createTextNode(content));
 					console.log(content);
 				});
 				Instascan.Camera.getCameras().then(function (cameras) {
@@ -114,6 +121,9 @@
 				}).catch(function (e) {
 					console.error(e);
 				});
+				function clearHistory(){
+					$("#history").empty();
+				}
 		</script>
 	</body>
 </html>
