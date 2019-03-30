@@ -48,37 +48,44 @@
 				<div class="main-content">
 					<section class="section">
 						<div class="section-header">
-							<h1>Scanner</h1>
+							<h1>Generator</h1>
 							<div class="section-header-breadcrumb">
 								<div class="breadcrumb-item"><a href="#">qrLoop</a></div>
-								<div class="breadcrumb-item"><a href="#">Scanner</a></div>
+								<div class="breadcrumb-item"><a href="#">Generator</a></div>
 							</div>
 						</div>
 						<div class="section-body">
 						   <div class="row">
 							  <div class="col-12 col-md-6 col-lg-6">
-									<div class="card card-large-icons">
-										<div class="card-icon bg-primary text-white">
-											<i class="fas fa-qrcode"></i>
-										</div>
-										<div class="card-body">
-											<h4>Scanner</h4>
-											<p>Start Scanning Looping QR Codes</p>
-											<a href="scanner.html" class="card-cta">GO<i class="fas fa-chevron-right"></i></a>
+								<div class="card">
+								  <div class="card-header">
+									<h4>Qr Code</h4>
+									<div class="card-header-action">
+											<a href="#" class="btn btn-info" onclick="defaultMultiQR(6)">
+												Default Transfer
+											</a>
 										</div>
 									</div>
+									<div class="card-body">
+										<img class="d-block w-100" src= "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=Hello%20world&choe=UTF-8" id="qrcode"></img>
+									</div>
+								</div>
 							  </div>
 							  <div class="col-12 col-md-6 col-lg-6">
-									<div class="card card-large-icons">
-										<div class="card-icon bg-primary text-white">
-											<i class="fas fa-wrench"></i>
-										</div>
-										<div class="card-body">
-											<h4>Generator</h4>
-											<p>Start Generating Looping QR Codes.</p>
-											<a href="generator.html" class="card-cta">GO<i class="fas fa-chevron-right"></i></a>
-										</div>
-									</div>
+								<div class="card">
+								  <div class="card-header">
+									<h4 class="card-title">Enter Data</h4>
+								  </div>
+								  
+								  <div class="card-body">
+										<div class="section-title mt-0">Input Looping Data</div>
+										<input id="multiQRText" type="text" value="data"  class="form-control form-control-lg" />
+										<br/>
+										<div class="section-title mt-0">Input Singular Data</div>
+										<input id="singleQRText" type="text" value="hello anudit"  class="form-control form-control-lg"/>
+										<br />
+								  </div>
+								</div>
 							  </div>
 							</div>
 						</div>
@@ -93,31 +100,50 @@
 		<script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
 		<script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
 		<script src="assets/modules/moment.min.js"></script>
-		<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-		<!-- JS Libraies -->
-		<!-- Page Specific JS File -->
-		<!-- Template JS File -->
+
 		<script src="assets/js/scripts.js"></script>
-		<script src="assets/js/custom.js"></script>
-		</script>
-		<script>
-				let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-				scanner.addListener('scan', function (content) {
-					document.getElementById('scannedData').appendChild(document.createTextNode(content));
-					console.log(content);
-				});
-				Instascan.Camera.getCameras().then(function (cameras) {
-					if (cameras.length >=  2) {
-						scanner.start(cameras[1]);
-					}
-					else if (cameras.length == 1) {
-						scanner.start(cameras[0]);
-					} else {
-						console.error('No cameras found.');
-					}
-				}).catch(function (e) {
-					console.error(e);
-				});
+		<script >
+			function makeSingleQR (dat) {
+				var data = encodeURI(dat);
+				document.getElementById("qrcode").src = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl="+ data +"&choe=UTF-8";
+			}
+
+			function makeMultiQR (dat) {
+				var data = encodeURI(dat);
+				document.getElementById("qrcode").src = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl="+ data +"&choe=UTF-8";
+			}
+						
+			var arr = [" hi"," my"," name"," is"," anudit"," nagar"];
+
+			function defaultMultiQR(fps){
+				var i=0;
+				var ev = setInterval(function(){ 
+					var v= arr[i];
+					console.log("made : "+v)
+					makeSingleQR(v);
+					i++;
+					if(i == 6)
+					clearInterval(ev);
+				}, 1000/fps);
+			}
+
+			
+			$("#singleQRText").keyup( function () {
+				makeSingleQR(document.getElementById("singleQRText").value);
+			}).
+			on("keydown", function (e) {
+				if (e.keyCode == 13) {
+					makeSingleQR(document.getElementById("singleQRText").value);
+				}
+			});
+			$("#multiQRText").keyup( function () {
+				makeMultiQR(document.getElementById("multiQRText").value);
+			}).
+			on("keydown", function (e) {
+				if (e.keyCode == 13) {
+					makeMultiQR(document.getElementById("multiQRText").value);
+				}
+			});
 		</script>
 	</body>
 </html>
