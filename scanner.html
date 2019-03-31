@@ -31,10 +31,10 @@
 						<ul class="sidebar-menu">
 							<li class="menu-header">qrLoop</li>
 							<li>
-								<a href="#" class="nav-link"><i class="fas fa-qrcode"></i> <span>Scanner</span></a>
+								<a href="scanner.html" class="nav-link"><i class="fas fa-qrcode"></i> <span>Scanner</span></a>
 							</li>
 							<li>
-								<a href="#" class="nav-link"><i class="fas fa-wrench"></i> <span>Generate</span></a>
+								<a href="generator.html" class="nav-link"><i class="fas fa-wrench"></i> <span>Generate</span></a>
 							</li>
 						</ul>
 						<div class="mt-4 mb-4 p-3 hide-sidebar-mini">
@@ -103,11 +103,30 @@
 		<script src="assets/js/scripts.js"></script>
 		<script src="assets/js/custom.js"></script>
 		</script>
-		<script>
+		<script>	
+				
+				let blocks;
+				let predictedLength = 0;
+
 				let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
 				scanner.addListener('scan', function (content) {
 					document.getElementById('history').appendChild(document.createTextNode(content));
-					console.log(content);
+					let testData = content.split("|");
+					if (testData.length==3){
+						predictedLength = testData[2];
+						blocks.push([testData[0], testData[1], testData[3]]);
+					}
+					else{
+						console.log("invalid Block data : "+content);
+					}
+
+					if(blocks.length == predictedLength){
+						let t=0;
+						let data ="";				
+						for(t=0;t<blocks.length;t++)
+							data+=blocks[t][2];
+						alert("Assembled : "+data);
+					}
 				});
 				Instascan.Camera.getCameras().then(function (cameras) {
 					if (cameras.length >=  2) {

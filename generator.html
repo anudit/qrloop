@@ -31,10 +31,10 @@
 						<ul class="sidebar-menu">
 							<li class="menu-header">qrLoop</li>
 							<li>
-								<a href="#" class="nav-link"><i class="fas fa-qrcode"></i> <span>Scanner</span></a>
+								<a href="scanner.html" class="nav-link"><i class="fas fa-qrcode"></i> <span>Scanner</span></a>
 							</li>
 							<li>
-								<a href="#" class="nav-link"><i class="fas fa-wrench"></i> <span>Generate</span></a>
+								<a href="generator.html" class="nav-link"><i class="fas fa-wrench"></i> <span>Generate</span></a>
 							</li>
 						</ul>
 						<div class="mt-4 mb-4 p-3 hide-sidebar-mini">
@@ -61,8 +61,11 @@
 								  <div class="card-header">
 									<h4>Qr Code</h4>
 									<div class="card-header-action">
-											<a href="#" class="btn btn-info" onclick="defaultMultiQR(6)">
-												Default Transfer
+											<a href="#" class="btn btn-info" onclick="runLoop(true)">
+												TestLoop
+											</a>
+											<a href="#" class="btn btn-success" onclick="runLoop()">
+												LoopTransfer
 											</a>
 										</div>
 									</div>
@@ -103,31 +106,60 @@
 
 		<script src="assets/js/scripts.js"></script>
 		<script >
+			function Block(hash, index, total, data) {
+				this.hash = hash;
+				this.index = index;
+				this.total = total;
+				this.data = data;
+
+				this.toString = function() {
+					return (this.hash+"|"+(this.index).toString()+"|"+(this.total).toString()+"|"+ (this.data).toString());
+				}
+
+				this.makeQR = function(id) {
+					document.getElementById(id).src = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl="+ encodeURI(this.data) +"&choe=UTF-8";
+				}
+			}
+
+			var BLOCKSIZE = 30;
+			var STOCKFPS = 3;
+			var QR = "qrcode";
+			var blocks=[];
+
 			function makeSingleQR (dat) {
 				var data = encodeURI(dat);
 				document.getElementById("qrcode").src = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl="+ data +"&choe=UTF-8";
 			}
 
-			function makeMultiQR (dat) {
-				var data = encodeURI(dat);
-				document.getElementById("qrcode").src = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl="+ data +"&choe=UTF-8";
-			}
-						
-			var arr = [" hi"," my"," name"," is"," anudit"," nagar"];
-
-			function defaultMultiQR(fps){
+			function makeMultiQR (HASH, dat) {
+				blocks = [];
+				var data = dat.match(new RegExp('.{1,' + BLOCKSIZE + '}', 'g'));
 				var i=0;
-				var ev = setInterval(function(){ 
-					var v= arr[i];
-					console.log("made : "+v)
-					makeSingleQR(v);
-					i++;
-					if(i == 6)
-					clearInterval(ev);
-				}, 1000/fps);
+				for(i=0;i<data.length;i++)
+					blocks.push(new Block(HASH, i+1,data.length,data[i] ));
 			}
 
-			
+			function runLoop(defaultLoop = false){
+				i=0;
+				var arr = [" hi"," my"," name"," is"," anudit"," nagar"];
+				if (defaultLoop == true){
+					var ev = setInterval(function(){ 
+					makeSingleQR(arr[i]);
+					i++;
+					if(i == arr.length)
+					clearInterval(ev);
+					}, 1000/STOCKFPS);
+				} else{
+					var ev = setInterval(function(){ 
+					blocks[i].makeQR(QR);
+					i++;
+					console.log(i);
+					if(i == blocks.length)
+					clearInterval(ev);
+				}, 1000/STOCKFPS);
+				}
+			}
+
 			$("#singleQRText").keyup( function () {
 				makeSingleQR(document.getElementById("singleQRText").value);
 			}).
@@ -137,11 +169,11 @@
 				}
 			});
 			$("#multiQRText").keyup( function () {
-				makeMultiQR(document.getElementById("multiQRText").value);
+				makeMultiQR(Math.floor(Math.random()*90000) + 10000, document.getElementById("multiQRText").value);
 			}).
 			on("keydown", function (e) {
 				if (e.keyCode == 13) {
-					makeMultiQR(document.getElementById("multiQRText").value);
+					makeMultiQR(Math.floor(Math.random()*90000) + 10000,document.getElementById("multiQRText").value);
 				}
 			});
 		</script>
