@@ -105,16 +105,30 @@
 		</script>
 		<script>	
 				
-				let blocks;
+				function Block(hash, index, total, data) {
+					this.hash = hash;
+					this.index = index;
+					this.total = total;
+					this.data = data;
+				}
+
+				let blocks = [];
 				let predictedLength = 0;
+				let activeHash = "";
 
 				let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
 				scanner.addListener('scan', function (content) {
 					document.getElementById('history').appendChild(document.createTextNode(content));
 					let testData = content.split("|");
-					if (testData.length==3){
-						predictedLength = testData[2];
-						blocks.push([testData[0], testData[1], testData[3]]);
+					if (testData.length==3){ // check if valid block
+						if(testData[0] != activeHash){// check if new hash
+							activeHash = testData[0];
+							predictedLength = testData[2];
+							blocks.push(new Block(testData[0], testData[1], testData[2], testData[3]));
+						}
+						else{// continue storing with old hash
+							blocks.push(new Block(testData[0], testData[1], testData[2], testData[3]));
+						}
 					}
 					else{
 						console.log("invalid Block data : "+content);
@@ -124,7 +138,7 @@
 						let t=0;
 						let data ="";				
 						for(t=0;t<blocks.length;t++)
-							data+=blocks[t][2];
+							data+=blocks[t].data;
 						alert("Assembled : "+data);
 					}
 				});
